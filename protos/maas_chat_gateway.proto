@@ -1,0 +1,256 @@
+syntax = "proto3";
+
+option java_package = "com.kuaishou.mmu.maas.api";
+option java_outer_classname = "MaaSChatGatewayApiProto";
+option java_multiple_files = true;
+
+//import "maas/api.proto";
+//import "aip/aip_common.proto";
+//import "mmu/mmu_m2v_service.proto";
+//import "common/blob_store.proto";
+
+package mmu.maas.chat;
+
+enum ResultCode {
+  SUCCESS = 0;
+  INPUT_SIZE_ERROR = 1;
+  OUTPUT_SIZE_ERROR = 2;
+  OUTPUT_WINDOW_SIZE_ERROR = 3;
+  OUTPUT_MATCH_STOP = 4;
+  INPUT_PARAM_ERROR = 10;
+  INTERNAL_ERROR = 11;
+  OVER_RATE_LIMIT = 13; // 超过限流配置
+  REJECT = 14; // 拒绝
+
+  UNKOWN = 15;
+
+  TIME_OUT = 16; // 超时
+}
+
+message MaaSGatewayResult {
+  ResultCode result_code = 1;
+  string result_message = 2;
+}
+
+service MaaSChatGatewayService {
+  rpc Chat(KuaiYiChatCompletionRequest) returns (KuaiYiChatCompletionResponse);
+  rpc ChatBiStream(stream KuaiYiChatCompletionRequest) returns (stream KuaiYiChatCompletionResponse);
+  rpc ChatServerStream(KuaiYiChatCompletionRequest) returns (stream KuaiYiChatCompletionResponse);
+}
+
+message MaasGatewayLog {
+  string end_point = 1; // 服务名
+  string key = 2; // 调用方
+  string request_id = 3; // 用户请求id
+  string sub_request_id = 4; // 推理服务请求id
+  ResultCode result_code = 5; // 处理结果
+  int64 total_tokens = 6; // 调用量
+  int64 input_tokens = 7;
+  int64 output_tokens = 8;
+  int64 timestamp = 9; // 时间戳
+  map<string, string> params = 10; // 其他信息
+}
+
+message ModelInfo {
+  string model = 1;
+  repeated string roles = 2;
+}
+
+message ProtoBlobStoreKey {
+    string db = 1;
+    string table = 2;
+    string key = 3;
+    map<string, string> custom_request_header = 4;
+    string bucket_name = 5;
+}
+
+message ModelInfoInternal {
+  ModelInfo model_info = 1;
+  string prompt_formater = 2;
+  string realy_service = 3;
+  string model_service = 4;
+}
+
+message ChatMessageImageUrl {
+  string url = 1;
+    string base64_data = 2;
+    bytes data = 3;
+    ProtoBlobStoreKey blob_key = 4;
+}
+
+message ChatMessageContentItem {
+  string type = 1; //text or image
+  oneof content {
+    string text = 2;
+    ChatMessageImageUrl image_url = 3;
+  }
+}
+
+message ChatMessageContent {
+  repeated ChatMessageContentItem content_item = 1;
+}
+
+message MessageInfo {
+  string role = 1;
+  oneof content {
+    string content_str = 2;
+    ChatMessageContent content_obj = 3;
+  }
+}
+
+message ResponseFormat {
+  ResponseType type = 1;
+}
+
+message FunctionInfo {
+  string description = 1;
+  string name = 2;
+  string parameters = 3;
+}
+
+message ToolInfo {
+  string type = 1;
+  FunctionInfo function = 2;
+}
+
+message ToolChoiceFunction {
+  string name = 1;
+}
+
+message ToolChoiceObj {
+  string type = 1;
+  ToolChoiceFunction function = 2;
+}
+
+message KuaiYiChatCompletionRequest {
+  string key = 1; //业务标识,新业务接入需要申请
+  string model = 2 [deprecated = true]; // 使用 endPoint 代替，废除掉 model的使用
+  string end_point = 21; // 服务节点，预置服务和自定义服务唯一对应
+  repeated MessageInfo messages = 3;
+  int32 max_tokens = 4;
+  int32 n = 5;
+
+  float repetition_penalty = 8;
+  float temperature = 9;
+  float top_p = 10;
+  int32 random_seed = 11;
+  repeated string stop = 12;
+  repeated ToolInfo tools = 17;
+  oneof tool_choice {
+    string tool_choice_str = 18;
+    ToolChoiceObj tool_choice_obj = 19;
+  }
+  bool parallel_tool_calls = 20;
+  map<string, string> extra_params = 22;
+  OperationTye operation = 24;
+  int32 time_out_ms = 25; // 超时时间
+  KuaiYiReqType type = 26; //请求类型
+}
+
+enum KuaiYiReqType {
+    LLM = 0;
+    MLLM = 1;
+}
+
+
+enum OperationTye {
+  CHAT = 0;
+  STOP = 1;
+}
+
+message Content {
+  string token = 1;
+  float logprob = 2;
+}
+
+message LogProbs {
+  repeated Content content = 1;
+}
+
+message ToolFunction {
+  string name = 1;
+  string arguments = 2;
+}
+
+message ToolCall {
+  string id = 1;
+  string type = 2;
+  ToolFunction function = 3;
+}
+
+message Message {
+  string role = 1;
+  string content = 2;
+  repeated ToolCall tool_calls = 3;
+}
+
+message Choice {
+  int32 index = 1;
+  string finish_reason = 2;
+  map<string, string> message = 3;
+  LogProbs logprobs = 4;
+  Message message_v2 = 5;
+  repeated float emb = 6; //emb 多模态可能返回
+}
+
+message Usage {
+  int32 prompt_tokens = 1;
+  int32 completion_tokens = 2;
+  int32 total_tokens = 3;
+}
+
+enum ResponseType {
+  TEXT = 0;
+  JSON_OBJECT = 1;
+}
+
+message ResultStatus {
+  ResultCode code = 1;
+  string msg = 2; //具体的错误信息
+}
+
+message KuaiYiChatCompletionResponse {
+  string key = 1; //业务标识,新业务接入需要申请
+  string object = 2;
+  string id = 3; //请求Id
+  string model = 4;
+  string end_point = 10; //请求的服务名
+  int64 created = 5;
+  ResultStatus status = 6; //状态,成功为SUCCESS
+
+  repeated Choice choices = 7;
+  Usage usage = 8;
+
+  string custom = 9;
+  map<string, string> extras = 11;
+}
+
+message LargeModelCostInfo {
+  // 调用明细
+  SourceType source_type = 1; // 网关服务标志
+  string biz = 2; // 业务标志
+  string model = 3; // 收费id
+  string internal_service = 4; // 推理服务子模型
+  string request_id = 5; // 用户请求id
+  string sub_request_id = 6; // 推理服务请求id
+  float total_amount =7; // 调用量
+  float input_amount = 8;
+  float output_amount = 9;
+  string caller = 10; // 上游主调服务
+  string server = 11; // 被调服务
+  string app_name = 12; // 业务agent 名称
+  int64 timestamp = 13; // 时间戳
+  map<string, string> params = 14; // 其他信息
+
+  // 计费单位信息
+  string sku = 15; // 计费sku信息
+  string consumer_id = 16; // 收费id
+}
+
+enum SourceType {
+  UNKNOWN_SOURCE = 0;
+  KWAIYI = 1;
+  KOLORS = 2;
+  KLING = 3;
+  OTHER = 4;
+}

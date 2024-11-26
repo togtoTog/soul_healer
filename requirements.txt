@@ -3,3 +3,6 @@ flask_socketio
 playsound
 gtts
 requests
+websockets
+PyJWT
+infra-kess
