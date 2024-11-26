@@ -4,5 +4,5 @@ playsound
 gtts
 requests
 websockets
-PyJWT
+pyjwt
 infra-kess

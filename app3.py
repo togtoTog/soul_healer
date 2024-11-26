@@ -383,19 +383,16 @@ def generate_image_multiverse2(data):
     socketio.emit('image_multiverse', {'answer_1': answer_1, 'answer_2': answer_2, 'answer_3': answer_3})
 
 
-@app.route('/soul/healer/create', methods=['GET', 'POST'])
-def create_soul_healer():
-    prompt = request.args.get('prompt', '')
+@socketio.on("create_soul_healer")
+@app.route('/', methods=['GET', 'POST'])
+def create_soul_healer(data):
+    prompt = data['theme']
     print("create soul healer, prompt = {}".format(prompt))
     tripo_url = soul_healer_app.create_soul_healer(prompt)
     path = soul_healer_app.export_soul_healer(tripo_url)
-    return {
-        "code": 0,
-        "message": "success",
-        "data": {
-            "path": path
-        }
-    }
+    socketio.emit(
+        'soul_healer_result', {"path": path}
+    )
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format=logger_format)

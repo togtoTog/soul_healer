@@ -13,6 +13,7 @@
     <!-- socket监听图片生成事件 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
     <script src="../static/js/gen_pic.js"></script>
+    <script src="../static/js/gen_soul_healer.js"></script>
     <script src="../static/js/gen_scene_character.js"></script>
     <script src="../static/js/gen_pic_with_people.js"></script>
     <script src="../static/js/gen_pic_with_lines.js"></script>
@@ -56,6 +57,7 @@
             </select>
             <input type="text" id="myInput" name="theme" placeholder="在这里输入你想看的主题">
             <button class="button1" onclick="generateImage()">一键生成</button>
+            <button class="button2" onclick="createSoulHealer()">心理治愈</button>
             <button class="button2" onclick="generateSceneCharacter()">人机共创</button>
             <button class="button3" onclick="generateSceneCharacter2()">平行宇宙</button>
         </div>

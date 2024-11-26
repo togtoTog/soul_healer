@@ -23,6 +23,15 @@ function generateSceneCharacter() {
   socket.emit('generate_scene_character', { theme: theme, style: style, frame: frame  });
 }
 
+// 心理治愈用
+function createSoulHealer() {
+  document.getElementById('loader-block').style.display = 'block';
+  var theme = document.getElementById('myInput').value;
+  var style = document.getElementById("style").value;
+  var frame = document.getElementById("frame").value;
+  socket.emit('create_soul_healer', {theme: theme, style: style, frame: frame});
+}
+
 // 平行宇宙用
 function generateSceneCharacter2() {
   document.getElementById('loader-block').style.display = 'block';

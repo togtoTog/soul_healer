@@ -77,6 +77,8 @@ class Tripo3DService:
                 try:
                     data = json.loads(message)
                     status = data['data']['status']
+                    progress = data['data']['progress']
+                    print("creating tripo 3D model! the progress = {}".format(progress))
                     if status not in ['running', 'queued']:
                         break
                 except json.JSONDecodeError:
