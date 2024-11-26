@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI剧场</title>
+    <!-- 样式、图标 -->
+    <link href="../static/css/style_pc.css" rel="stylesheet">
+    <link href="../static/css/style_m.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="static/meta/icon.png">
+    <!-- socket监听图片生成事件 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <script src="../static/js/gen_pic.js"></script>
+    <script src="../static/js/gen_scene_character.js"></script>
+    <script src="../static/js/gen_pic_with_people.js"></script>
+    <script src="../static/js/gen_pic_with_lines.js"></script>
+    <script src="../static/js/gen_scene_character2.js"></script>
+    <script src="../static/js/gen_pic_multiverse.js"></script>
+</head>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<body class="bg">
+
+    <!-- 标题 -->
+    <div class="animated-text">
+        <span class="ai-theatre">AI剧场</span>
+        <span class="line">——</span>
+        <span class="content">两个AI一台戏，人人都可当导演</span>
+    </div>
+
+    <!-- 输入框和生成按钮 -->
+    <div class="container">
+        <div class="tech-input">
+            <span class="mobile-only">画面风格：</span>
+            <select class="select1" id="frame">
+                <option value="默认">默认画面</option>
+                <option value="写实，杰作，电影场景，真实">写实</option>
+                <option value="动漫，日漫">动漫</option>
+                <!-- <option value="古风，侠客，高画质">古风</option> -->
+            </select>
+            <span class="mobile-only">台词风格：</span>
+            <select class="select1" id="style">
+                <option value="默认风格">默认风格</option>
+                <option value="王家卫">王家卫</option>
+                <option value="姜文">姜文</option>
+                <option value="李安">李安</option>
+            </select>
+            <span class="mobile-only">背景音乐：</span>
+            <select class="select2" id="bgm">
+                <option value="无音乐">无音乐</option>
+                <option value="浪漫">浪漫</option>
+                <option value="激昂">激昂</option>
+                <option value="悠扬">悠扬</option>
+            </select>
+            <input type="text" id="myInput" name="theme" placeholder="在这里输入你想看的主题">
+            <button class="button1" onclick="generateImage()">一键生成</button>
+            <button class="button2" onclick="generateSceneCharacter()">人机共创</button>
+            <button class="button3" onclick="generateSceneCharacter2()">平行宇宙</button>
+        </div>
+    </div>
+
+    <!-- 测试用 -->
+    <!-- <div class="image-box">
+        <img class="image_left_right" src="static/meta/test.jpg" alt="Moving Image">
+    </div>
+    <div class="image-box">
+        <img class="image_up_down" src="static/meta/test.jpg" alt="Moving Image">
+    </div>
+    <div class="image-box">
+        <img class="moving-image" src="static/meta/test.jpg" alt="Moving Image">
+    </div> -->
+
+    <!-- 人机共创用 -->
+    <div class="block" id='scene-character-block' style="display: none; flex-direction: column;
+                        align-items: flex-start;justify-content: space-evenly;">
+        <div class="block2">
+            <label class="myLabel"> 剧情背景：&nbsp;</label>
+            <textarea id="scene" rows="3" cols="36" class="textarea2" placeholder="在这里输入新的台词"></textarea>
+        </div>
+        <div class="block2">
+            <label class="myLabel"> 角色1人设：</label>
+            <textarea id="character_1" rows="3" cols="36" class="textarea2" placeholder="在这里输入新的台词"></textarea>
+        </div>
+        <div class="block2">
+            <label class="myLabel"> 角色2人设：</label>
+            <textarea id="character_2" rows="3" cols="36" class="textarea2" placeholder="在这里输入新的台词"></textarea>
+        </div>
+        <button class="button4" onclick="generateImageWithPeople()">继续生成</button>
+    </div>
+    <!-- 平行宇宙用 -->
+    <div class="block" id='scene-character-block2' style="display: none; flex-direction: column;
+                        align-items: flex-start;justify-content: space-evenly;">
+        <div class="block2">
+            <label class="myLabel"> 剧情背景：&nbsp;</label>
+            <textarea id="2scene" rows="3" cols="36" class="textarea2" placeholder="在这里输入新的台词"></textarea>
+        </div>
+        <div class="block2">
+            <label class="myLabel"> 角色1人设：</label>
+            <textarea id="2character_1" rows="3" cols="36" class="textarea2" placeholder="在这里输入新的台词"></textarea>
+        </div>
+        <div class="block2">
+            <label class="myLabel"> 角色2人设：</label>
+            <textarea id="2character_2" rows="3" cols="36" class="textarea2" placeholder="在这里输入新的台词"></textarea>
+        </div>
+        <button class="button4" onclick="generateImageMultiverse()">继续生成</button>
+    </div>
+
+    <!-- 这两个div注意位置不要动 -->
+    <!-- 人机共创输入框 -->
+    <div class="block" id='lines-block' style="display: none;">
+        <div class="lines">
+            <textarea id="lines" rows="4" cols="36" class="textarea" placeholder="在这里输入新的台词"></textarea>
+            <!-- <input type="text" id="lines" name="lines" placeholder="在这里输入新的台词"> -->
+            <button class="button1" onclick="generateImageWithLines()">继续生成</button>
+        </div>
+    </div>
+    <!-- 平行宇宙单选框 -->
+    <div class="block" id='multiverse-block' style="display: none; flex-direction: column;
+                        align-items: center;justify-content: center;">
+        <div class="radio-row">
+            <input type="radio" id="option1" name="radio-group">
+            <label for="option1" id="option1-label">选项1</label>
+        </div>
+        <div class="radio-row">
+            <input type="radio" id="option2" name="radio-group">
+            <label for="option2" id="option2-label">选项2</label>
+        </div>
+        <div class="radio-row">
+            <input type="radio" id="option3" name="radio-group">
+            <label for="option3" id="option3-label">选项3</label>
+        </div>
+        <button class="button5" onclick="generateImageMultiverse2()">继续生成</button>
+    </div>
+    <!-- 加载图标 -->
+    <div class="block" id='loader-block' style="display: none;">
+        <div class="animbox">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <!-- 音频 -->
+    <!-- 人物对话 -->
+    <audio id="myAudio" controls style="display: none;"></audio>
+    <!-- 背景音乐 -->
+    <audio id="bgmAudio" controls style="display: none;"></audio>
+
+    <!-- 监听按钮事件 -->
+    <script src="../static/js/button_event.js"></script>
+    <!-- 监听选择框事件 -->
+    <script src="../static/js/select_listen.js"></script>
+</body>
+
+</html>

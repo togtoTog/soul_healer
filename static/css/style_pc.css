@@ -1,0 +1,496 @@
+/* PC端样式 */
+@media screen and (min-width: 1000px) {
+
+    /* 在屏幕宽度大于等于768px时应用的样式 */
+    /* 添加PC端特定的样式和代码 */
+    body.bg {
+        background-image: url(../meta/bg-pc.png);
+    }
+
+    .bg {
+        background-repeat: repeat;
+        background-size: 100%;
+    }
+
+    .block {
+        float: left;
+        margin-left: 20px;
+        margin-top: 5px;
+        height: 400px;
+        width: 400px;
+        color: #fafafa;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .animated-text {
+        font-family: 'Arial', sans-serif;
+        text-align: center;
+    }
+
+    .ai-theatre {
+        font-size: 50px;
+        color: white;
+        text-shadow: 2px 2px 0 #000000;
+    }
+
+    .line {
+        font-size: 36px;
+        color: white;
+    }
+
+    .content {
+        font-size: 36px;
+        font-weight: bold;
+        background-clip: text;
+        -webkit-background-clip: text;
+        /* 兼容性支持 */
+        color: transparent;
+        animation: gradientAnimation 5s infinite;
+        transition: color 0.3s ease-in-out;
+        animation-fill-mode: forwards;
+    }
+
+    @keyframes gradientAnimation {
+        0% {
+            background-image: linear-gradient(45deg, #ff9a9e, #c2e9fb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        50% {
+            background-image: linear-gradient(45deg, #fad0c4, #e87fe7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        100% {
+            background-image: linear-gradient(45deg, #e87fe7, #fad0c4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    }
+
+    /* 父容器样式 */
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 5%;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    /* 输入框样式 */
+    .tech-input {
+        position: relative;
+    }
+
+    .tech-input input {
+        border: none;
+        border-bottom: 2px solid #00baff;
+        background-color: transparent;
+        color: #ffffff;
+        font-size: 18px;
+        padding: 10px;
+        outline: none;
+        transition: border-bottom-color 0.3s ease;
+        width: 600px;
+    }
+
+    .tech-input input:focus {
+        border-bottom-color: #ff00ff;
+    }
+
+    .text {
+        font-size: 16px;
+        color: white;
+    }
+
+    .mobile-only {
+        display: none;
+        /* 默认情况下隐藏元素 */
+
+        /* 在移动设备上显示元素 */
+        @media only screen and (max-width: 1000px) {
+            display: block;
+        }
+    }
+
+    .select1 {
+        display: inline-block;
+        padding: 12px 12px;
+        font-size: 16px;
+        text-align: right;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #fff;
+        background: transparent;
+        border: none;
+        margin-right: 10px;
+    }
+
+    .select2 {
+        display: inline-block;
+        padding: 12px 12px;
+        text-align: right;
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #fff;
+        background: transparent;
+        border: none;
+        margin-right: 30px;
+    }
+
+    .button1 {
+        margin-left: 10px;
+        border: none;
+        /* background-color: #00baff; */
+        background: linear-gradient(45deg, #00baff, #d368d2);
+        color: #fff;
+        font-size: 18px;
+        padding: 10px 20px;
+        cursor: pointer;
+        outline: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .button2 {
+        margin-left: 10px;
+        border: none;
+        /* background-color: #f19053; */
+        background: linear-gradient(45deg, #ff9a9e, #6ec8f2);
+        color: #fff;
+        font-size: 18px;
+        padding: 10px 20px;
+        cursor: pointer;
+        outline: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .button3 {
+        margin-left: 10px;
+        border: none;
+        /* background-color: #00baff; */
+        background: linear-gradient(45deg, #bef107, #f76fa8);
+        color: #fff;
+        font-size: 18px;
+        padding: 10px 20px;
+        cursor: pointer;
+        outline: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .button4 {
+        margin-left: 150px;
+        border: none;
+        /* background-color: #00baff; */
+        background: linear-gradient(45deg, #00baff, #d368d2);
+        color: #fff;
+        font-size: 18px;
+        padding: 10px 20px;
+        cursor: pointer;
+        outline: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .button5 {
+        border: none;
+        /* background-color: #00baff; */
+        background: linear-gradient(45deg, #00baff, #d368d2);
+        color: #fff;
+        font-size: 18px;
+        padding: 10px 20px;
+        cursor: pointer;
+        outline: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .button1:hover {
+        background: none;
+        background-color: #e65be6;
+    }
+
+    .button2:hover {
+        background: none;
+        background-color: #e65be6;
+    }
+
+    .button3:hover {
+        background: none;
+        background-color: #e65be6;
+    }
+
+    .button4:hover {
+        background: none;
+        background-color: #e65be6;
+    }
+
+    .lines input {
+        border: none;
+        border-bottom: 2px solid #00baff;
+        background-color: transparent;
+        color: #ffffff;
+        font-size: 18px;
+        padding: 10px;
+        outline: none;
+        transition: border-bottom-color 0.3s ease;
+        width: 300px;
+        margin-top: 150px;
+        margin-bottom: 20px;
+    }
+
+    .lines input:focus {
+        border-bottom-color: #ff00ff;
+    }
+
+    .lines textarea {
+        background-color: #111;
+        color: #fff;
+        border: 2px solid #00baff;
+        padding: 10px;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 14px;
+        outline: none;
+        resize: none;
+        margin-top: 120px;
+        margin-bottom: 20px;
+    }
+
+    .lines textarea:focus {
+        border: 2px solid #ff00ff;
+    }
+
+    .myLabel {
+        font-size: 15px;
+        color: white;
+    }
+
+    .block2 {
+        margin-left: 18px;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .textarea2 {
+        background-color: #111;
+        color: #fff;
+        border: 2px solid #00baff;
+        padding: 10px;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 14px;
+        outline: none;
+        resize: none;
+        width: 250px;
+    }
+
+    .textarea2:hover {
+        border: 2px solid #ff00ff;
+    }
+
+    .radio-row {
+        width: 360px;
+        margin-left: 20px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        align-items: flex-start;
+        display: flex;
+        align-items: center;
+    }
+
+    .radio-row input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .radio-row label {
+        position: relative;
+        padding-left: 30px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .radio-row label:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #fff;
+        border-radius: 50%;
+    }
+
+    .radio-row input[type="radio"]:checked+label:before {
+        background-color: #fff;
+    }
+
+    .radio-row input[type="radio"]:checked+label:after {
+        content: "";
+        position: absolute;
+        left: 6px;
+        top: 6px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #fff;
+    }
+
+    .loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 2s linear infinite;
+        position: absolute;
+        display: block;
+        float: left;
+        margin-top: 170px;
+        margin-left: 170px;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .animbox {
+        margin: 50px auto;
+        width: 200px;
+        text-align: center;
+        margin-top: 170px;
+    }
+
+    /*设置各竖条的共有样式*/
+    .animbox>div {
+        background-color: #279fcf;
+        width: 4px;
+        height: 35px;
+        border-radius: 2px;
+        margin: 2px;
+        animation-fill-mode: both;
+        display: inline-block;
+        animation: anim 0.9s 0s infinite cubic-bezier(.11, .49, .38, .78);
+    }
+
+    /*设置动画延迟*/
+    .animbox> :nth-child(2),
+    .animbox> :nth-child(4) {
+        animation-delay: 0.25s !important;
+    }
+
+    .animbox> :nth-child(1),
+    .animbox> :nth-child(5) {
+        animation-delay: 0.5s !important;
+    }
+
+    /*定义动画*/
+    @keyframes anim {
+        0% {
+            transform: scaley(1);
+            background-color: #9b59b6;
+        }
+
+        80% {
+            transform: scaley(0.3);
+            background-color: #279fcf;
+        }
+
+        90% {
+            transform: scaley(1);
+            background-color: #279fcf;
+        }
+    }
+
+    .image-box {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        overflow: hidden;
+    }
+
+    .moving-image {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation: moveAndScale 5s infinite alternate;
+        width: 300px;
+        height: 300px;
+    }
+
+    @keyframes moveAndScale {
+        0% {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        50% {
+            transform: translate(-50%, -50%) scale(1.3);
+        }
+
+        100% {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    }
+
+    .image_left_right {
+        animation: moveLeftRight 5s infinite alternate;
+        width: 300px;
+        height: 300px;
+    }
+
+    @keyframes moveLeftRight {
+        0% {
+            transform: translateX(0) scale(1.2);
+        }
+
+        50% {
+            transform: translateX(15%) scale(1.1);
+        }
+
+        100% {
+            transform: translateX(-15%) scale(1.2);
+        }
+    }
+
+    .image_up_down {
+        animation: moveUpDown 5s infinite alternate;
+        width: 300px;
+        height: 300px;
+    }
+
+    @keyframes moveUpDown {
+        0% {
+            transform: translateY(0) scale(1.2);
+        }
+
+        50% {
+            transform: translateY(15%) scale(1.1);
+        }
+
+        100% {
+            transform: translateY(-15%) scale(1.2);
+        }
+    }
+}
