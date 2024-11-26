@@ -2,3 +2,4 @@ __pycache__
 static/img
 static/voice
 .DS_Store
+.idea/
