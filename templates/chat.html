@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心灵治愈对话</title>
+    <link rel="stylesheet" href="../static/css/style_chat.css"/>
+    <script src="../static/js/vue.global.js"></script>
+    <script src="../static/js/chat_vue.js" defer></script>
+</head>
+<body>
+<div id="chat_app" class="chat_body">
+    <table id="chat_container">
+        <tr style="width: 100%">
+            <td id="chat_left">
+                <div class="chat_message">
+                    <div id="chat_message_content" class="chat_content">
+                        <div class="reply_message">
+                            <img class="to_avatar" src="../static/meta/healer_avatar.png" alt="to_avatar">
+                            <div class="message_bubble">
+                                [[ welcome_msg ]]
+                            </div>
+                        </div>
+                        <!-- 聊天消息内容 -->
+                        <template v-for="item in messages">
+                            <!-- 用户消息 -->
+                            <div v-if="item.from_role === 1" class="send_message">
+                                <img class="from_avatar" src="../static/meta/sender_avatar.png" alt="from_avatar">
+                                <div class="message_bubble">
+                                    [[ item.content ]]
+                                </div>
+                            </div>
+                            <div v-else class="reply_message">
+                                <img class="to_avatar" src="../static/meta/healer_avatar.png" alt="to_avatar">
+                                <div class="message_bubble">
+                                    [[ item.content ]]
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="chat_form">
+                        <input id="chat_input_message" class="chat_form_input"
+                               type="text" name="inputMessage"
+                               placeholder="请输入聊天消息，回车或发送"
+                               v-model='chatFormInput'
+                               @keyup.enter="sendChatMessage()"
+                        />
+                        <button class="chat_form_button" @click="sendChatMessage()"></button>
+                    </div>
+                </div>
+            </td>
+            <td id="chat_right">
+                <div class="chat_summary">
+                    <div class="chat_memory">
+                        <div class="chat_memory_date">2024年11月27日</div>
+                        <div class="chat_memory_content">
+                            <div class="chat_memory_label">性格</div>
+                            <div class="chat_memory_text">
+                                <p>- 内向和敏感：小明倾向于内向，容易感受到周围环境的变化。</p>
+                                <p>- 在意他人感受：对他人的情绪和反应非常敏感。</p>
+                                <p>- 不善表达：尽管内心丰富，但在表达自己时常感到困难。</p>
+                            </div>
+                        </div>
+                        <div class="chat_memory_content">
+                            <div class="chat_memory_label">爱好</div>
+                            <div class="chat_memory_text">
+                                <p>-阅读：尤其喜欢心理学和哲学类书籍。</p>
+                                <p>-音乐：对音乐有浓厚兴趣，喜欢弹钢琴。</p>
+                                <p>-通过创作表达情感：音乐和绘画是他表达内心的途径。</p>
+                            </div>
+                        </div>
+                        <div class="chat_memory_content">
+                            <div class="chat_memory_label">聊天摘要</div>
+                            <div class="chat_memory_text">
+                                <p>-对未来的不确定感：小明在咨询中表达了对未来的不安。</p>
+                                <p>-在意他人看法：有时会因过于在意他人看法而感到压力。</p>
+                                <p>-咨询师建议：咨询师鼓励他多表达自己的想法，增强自信。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    const {createApp, ref} = Vue
+
+    async function fetchHttpData(url, options = {}) {
+        try {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            return null;
+        }
+    }
+
+    const app = createApp({
+        setup() {
+
+            function sendChatMessage() {
+                let inputText = this.chatFormInput
+                console.log("发送消息：" + inputText)
+                this.messages.push({
+                    from_role: 1,
+                    content: inputText
+                })
+                this.chatFormInput = ref('')
+                fetchHttpData('/chat/send', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: inputText
+                        })
+                    }).then(resp => {
+                        if (resp && resp.code === 0 && resp.data) {
+                            const replyMessage = resp.data.replyMessage
+                            console.log("回复消息：" + replyMessage)
+                            if (replyMessage && replyMessage !== '') {
+                                this.messages.push({
+                                    from_role: 2,
+                                    content: replyMessage
+                                })
+                            }
+                        } else {
+                            console.log("send message error, ", resp)
+                        }
+                    })
+            }
+
+            return {
+                welcome_msg: ref("你好，我是你的专属心灵治愈师！请输入你的问题开始咨询。"),
+                messages: ref([]),
+                chatFormInput: ref(""),
+                sendChatMessage
+            };
+        },
+        mounted() {
+            console.log("mounted app")
+        }
+    })
+    // 和默认的模板冲突，所以这里需要改一下
+    app.config.compilerOptions.delimiters = ['[[', ']]']
+    app.mount('#chat_app')
+</script>
+
+</body>
+</html>

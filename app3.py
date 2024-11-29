@@ -1,13 +1,15 @@
 import logging
 import os
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, make_response, send_from_directory, jsonify
+from flask_cors import CORS, cross_origin
 from flask_socketio import SocketIO
 
 import gol
 from app.SoulHealerAppService import SoulHealerAppService
 from character import gen_character
 from chat import chat
+from database import db_session, init_db
 from empty_folder import empty_folder
 from ketu import ketu, ketu_ref
 from say import say
@@ -18,7 +20,9 @@ logger = logging.getLogger(__name__)
 
 gol._init()
 
+# flask app配置
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 socketio = SocketIO(app)
 
 original_history = []
@@ -26,8 +30,14 @@ scene = ""
 character_1, character_2 = "", ""
 pic_key = ""
 
-
 soul_healer_app = SoulHealerAppService()
+
+
+# 关闭应用时，关闭DB会话
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db_session.remove()
+
 
 # 进入时创建相应IP文件夹，已存在则清空
 @app.route('/', methods=['GET', 'POST'])
@@ -58,6 +68,51 @@ def index():
         empty_folder(new_voc_dir)
 
     return render_template('index.html')
+
+
+@app.route("/chat", methods=['GET'])
+def chat_index():
+    return render_template('chat.html')
+
+
+@app.route("/chat/send", methods=['POST'])
+def chat_send_message():
+    req_body = request.get_json()
+    message = req_body['message']
+    reply_message = soul_healer_app.chat_healer(message)
+    if reply_message is None:
+        reply_content = ''
+    else:
+        reply_content = reply_message.content
+    return {
+        "code": 0,
+        "message": "success",
+        "data": {
+            "sendMessage": message,
+            "replyMessage": reply_content
+        }
+    }
+
+
+# 查询聊天记录
+@app.route("/chat/messages", methods=['POST'])
+def chat_pull_message():
+    req_body = request.get_json()
+    offset = req_body['offset']
+    pager = {
+        'page_size': req_body['pageSize'],
+        'offset': req_body['offset']
+    }
+    messages = soul_healer_app.pull_messages(pager=pager)
+    return {
+        "code": 0,
+        "message": "success",
+        "data": {
+            "hasMore": True,
+            "nextOffset": offset + len(messages),
+            "messages": messages
+        }
+    }
 
 
 # 一键生成
@@ -394,6 +449,28 @@ def create_soul_healer(data):
         'soul_healer_result', {"path": path}
     )
 
+
+# 获取治愈师3D文件
+@cross_origin()
+@app.route('/soul/healer/get', methods=['GET'])
+def get_soul_healer():
+    file_name = request.args.get("file_name", '')
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = current_dir + "/static/glb/"
+    try:
+        resp = make_response(
+            send_from_directory(file_path, file_name, as_attachment=True)
+        )
+        return resp
+    except Exception as e:
+        logger.error("get soul healer error! file_name = %s", file_name)
+        return jsonify({
+            "code": 501,
+            "message": "server internal error!"
+        })
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format=logger_format)
-    app.run(host='0.0.0.0', port=9999)
+    init_db()
+    app.run(host='0.0.0.0', port=9999, debug=True)

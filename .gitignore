@@ -3,3 +3,6 @@ static/img
 static/voice
 .DS_Store
 .idea/
+node_modules/
+
+static/glb/*.glb

@@ -1,0 +1,181 @@
+@media screen and (min-width: 1000px) {
+
+    /* 在屏幕宽度大于等于768px时应用的样式 */
+    /* 添加PC端特定的样式和代码 */
+    body.chat_body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+    }
+
+    .chat_body {
+        background-color: #f1f4fc;
+        background-repeat: repeat;
+        background-size: 100%;
+    }
+
+    #chat_container {
+        width: 80%;
+        height: calc(100vh - 100px);
+        margin: auto;
+    }
+
+    #chat_left {
+        width: 40%;
+        height: 100%;
+        background-color: #f2f4f7;
+    }
+
+    #chat_right {
+        width: 40%;
+        height: 100%;
+        background-color: #f2f4f7;
+    }
+
+    .chat_message {
+        width: 60%;
+        height: 80%;
+        border: 1px solid #00baff;
+        border-radius: 10px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .chat_content {
+        max-width: 100%;
+        height: calc(100% - 50px);
+        display: flex;
+        flex-direction: column;
+        overflow-y: scroll;
+    }
+
+    .reply_message {
+        margin-top: 10px;
+        align-self: flex-start;
+        margin-left: 10px;
+        margin-right: 10px;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .send_message {
+        margin-top: 10px;
+        align-self: flex-end;
+        margin-left: 10px;
+        margin-right: 10px;
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .send_message .message_bubble {
+        font-size: 15px;
+        padding: 8px;
+        background-color: #008fff;
+        color: #FFFFFF;
+    }
+
+    .message_bubble {
+        background-color: #FFFFFF;
+        border-radius: 6px;
+        padding: 8px;
+        font-size: 15px;
+        color: #333;
+        max-width: calc(100% - 20px);
+        min-height: 20px;
+    }
+
+    .from_avatar {
+        height: 30px;
+        width: 30px;
+        border: 1px solid #ddd;
+        border-radius: 50%;
+        padding: 1px;
+        align-self: baseline;
+        margin-left: 3px;
+    }
+
+    .to_avatar {
+        height: 30px;
+        width: 30px;
+        border: 1px solid #ddd;
+        border-radius: 50%;
+        padding: 1px;
+        align-self: baseline;
+        margin-right: 3px;
+    }
+
+    .chat_form {
+        width: 100%;
+        height: 50px;
+        border-top: 1px solid #e0e2e5;
+    }
+
+    /* 发送消息的内容 */
+    .chat_form_input {
+        height: 40px;
+        float: left;
+        margin-left: 5px;
+        margin-top: 5px;
+        padding: 0 0 0 3px;
+        border: 0;
+        width: calc(100% - 56px);
+    }
+
+    /* 发送消息的按钮 */
+    .chat_form_button {
+        height: 40px;
+        width: 40px;
+        background-image: url("../meta/send-icon.png");
+        background-repeat: repeat;
+        background-size: 100%;
+        border: none;
+        float: right;
+        margin-right: 5px;
+        margin-top: 5px;
+    }
+
+    .chat_summary {
+        width: 60%;
+        height: 80%;
+        border: 1px solid #9b59b6;
+        border-radius: 10px;
+        margin: auto;
+        background-image: url("../meta/bg_chat.png");
+        background-color: #ffffff;
+        background-size: cover;
+    }
+
+    .chat_memory {
+        margin: 10px 10px 0 10px;
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid #e0e2e5;
+    }
+
+    .chat_memory_date {
+        align-self: center;
+    }
+
+    .chat_memory_label {
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .chat_memory_text {
+        font-size: 12px;
+        margin-left: 5px;
+    }
+
+    .chat_memory_content {
+        background-color: #FFFFFF;
+        border-radius: 10px;
+        margin-top: 15px;
+        margin-left: 5px;
+    }
+
+}

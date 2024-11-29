@@ -33,3 +33,9 @@ class FileUtils:
     def count_path_files(file_path):
         file_list = os.listdir(file_path)
         return len(file_list)
+
+    @staticmethod
+    def touch_file(file_path):
+        if not os.path.exists(file_path):
+            file = open(file_path, 'w', encoding='utf-8')
+            file.close()
