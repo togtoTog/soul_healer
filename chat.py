@@ -1,8 +1,7 @@
-import requests
-import json
 import random
 
 from meta_data import *
+
 
 # 聊天
 # 入参：question--问题，original_history--对话历史

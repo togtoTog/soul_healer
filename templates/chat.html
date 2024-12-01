@@ -1,91 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>心灵治愈对话</title>
-    <link rel="stylesheet" href="../static/css/style_chat.css"/>
-    <script src="../static/js/vue.global.js"></script>
-    <script src="../static/js/chat_vue.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>心灵治愈对话</title>
+  <link rel="stylesheet" href="../static/css/style_chat.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+  <!-- import JavaScript -->
+  <script src="../static/js/vue.global.js"></script>
+  <script src="https://unpkg.com/element-plus"></script>
+  <script src="https://unpkg.com/@element-plus/icons-vue"></script>
+  <script src="../static/js/chat_vue.js" defer></script>
 </head>
-<body>
+<body style="margin: 0">
 <div id="chat_app" class="chat_body">
-    <table id="chat_container">
-        <tr style="width: 100%">
-            <td id="chat_left">
-                <div class="chat_message">
-                    <div id="chat_message_content" class="chat_content">
-                        <div class="reply_message">
-                            <img class="to_avatar" src="../static/meta/healer_avatar.png" alt="to_avatar">
-                            <div class="message_bubble">
-                                [[ welcome_msg ]]
-                            </div>
-                        </div>
-                        <!-- 聊天消息内容 -->
-                        <template v-for="item in messages">
-                            <!-- 用户消息 -->
-                            <div v-if="item.from_role === 1" class="send_message">
-                                <img class="from_avatar" src="../static/meta/sender_avatar.png" alt="from_avatar">
-                                <div class="message_bubble">
-                                    [[ item.content ]]
-                                </div>
-                            </div>
-                            <div v-else class="reply_message">
-                                <img class="to_avatar" src="../static/meta/healer_avatar.png" alt="to_avatar">
-                                <div class="message_bubble">
-                                    [[ item.content ]]
-                                </div>
-                            </div>
-                        </template>
+  <el-container class="common-layout">
+    <el-header height="80px" style="background-color: #5683f0;">
+      <h2 style="color: #FFFFFF; margin: 20px 0 0 0;">
+        Hi，欢迎来到记忆小镇，开启你的梦幻之旅！
+      </h2>
+    </el-header>
+    <el-container>
+      <el-aside width="200px" style="border-right: 1px solid rgba(5, 5, 5, 0.06)">
+        <el-menu default-active="1">
+          <el-menu-item index="1">
+            <el-icon>
+              <Message/>
+            </el-icon>
+            <span>消息</span>
+          </el-menu-item>
+        </el-menu>
+      </el-aside>
+      <el-main>
+        <el-row id="chat_container" :gutter="8" style="width: 100%">
+          <el-col :span="16" id="chat_left">
+            <div class="chat_message">
+              <el-scrollbar height="100%" class="chat_content_scroll" ref="chatContentScrollRef">
+                <div id="chat_message_content" class="chat_content" ref="chatContentRef">
+                  <div class="reply_message">
+                    <img class="to_avatar" src="../static/meta/healer_avatar.png" alt="to_avatar">
+                    <div class="message_bubble">
+                      [[ welcome_msg ]]
                     </div>
-                    <div class="chat_form">
-                        <input id="chat_input_message" class="chat_form_input"
-                               type="text" name="inputMessage"
-                               placeholder="请输入聊天消息，回车或发送"
-                               v-model='chatFormInput'
-                               @keyup.enter="sendChatMessage()"
-                        />
-                        <button class="chat_form_button" @click="sendChatMessage()"></button>
+                  </div>
+                  <!-- 聊天消息内容 -->
+                  <template v-for="item in messages">
+                    <!-- 用户消息 -->
+                    <div v-if="item.from_role === 1" class="send_message">
+                      <img class="from_avatar" src="../static/meta/sender_avatar.png" alt="from_avatar">
+                      <div class="message_bubble">
+                        [[ item.content ]]
+                      </div>
                     </div>
+                    <div v-else class="reply_message">
+                      <img class="to_avatar" src="../static/meta/healer_avatar.png" alt="to_avatar">
+                      <div class="message_bubble">
+                        [[ item.content ]]
+                      </div>
+                    </div>
+                  </template>
                 </div>
-            </td>
-            <td id="chat_right">
-                <div class="chat_summary">
-                    <div class="chat_memory">
-                        <div class="chat_memory_date">2024年11月27日</div>
-                        <div class="chat_memory_content">
-                            <div class="chat_memory_label">性格</div>
-                            <div class="chat_memory_text">
-                                <p>- 内向和敏感：小明倾向于内向，容易感受到周围环境的变化。</p>
-                                <p>- 在意他人感受：对他人的情绪和反应非常敏感。</p>
-                                <p>- 不善表达：尽管内心丰富，但在表达自己时常感到困难。</p>
-                            </div>
-                        </div>
-                        <div class="chat_memory_content">
-                            <div class="chat_memory_label">爱好</div>
-                            <div class="chat_memory_text">
-                                <p>-阅读：尤其喜欢心理学和哲学类书籍。</p>
-                                <p>-音乐：对音乐有浓厚兴趣，喜欢弹钢琴。</p>
-                                <p>-通过创作表达情感：音乐和绘画是他表达内心的途径。</p>
-                            </div>
-                        </div>
-                        <div class="chat_memory_content">
-                            <div class="chat_memory_label">聊天摘要</div>
-                            <div class="chat_memory_text">
-                                <p>-对未来的不确定感：小明在咨询中表达了对未来的不安。</p>
-                                <p>-在意他人看法：有时会因过于在意他人看法而感到压力。</p>
-                                <p>-咨询师建议：咨询师鼓励他多表达自己的想法，增强自信。</p>
-                            </div>
-                        </div>
-                    </div>
+              </el-scrollbar>
+              <div class="chat_form">
+                <el-input id="chat_input_message"
+                          class="chat_form_input"
+                          ref="chatFormInputRef"
+                          style="height: 40px;width: calc(100% - 56px)"
+                          v-model="chatFormInput"
+                          placeholder="请输入聊天消息，回车或发送"
+                          @keyup.enter="sendChatMessage()">
+                </el-input>
+                <el-button class="chat_form_button"
+                           circle
+                           style="height: 40px; width: 40px"
+                           @click="sendChatMessage()">
+                </el-button>
+              </div>
+            </div>
+          </el-col>
+          <el-col :span="8" id="chat_right">
+            <div class="chat_summary">
+              <div class="chat_memory">
+                <div class="chat_memory_date">2024年11月27日</div>
+                <div class="chat_memory_content">
+                  <div class="chat_memory_label">性格</div>
+                  <div class="chat_memory_text">
+                    <p>- 内向和敏感：小明倾向于内向，容易感受到周围环境的变化。</p>
+                    <p>- 在意他人感受：对他人的情绪和反应非常敏感。</p>
+                    <p>- 不善表达：尽管内心丰富，但在表达自己时常感到困难。</p>
+                  </div>
                 </div>
-            </td>
-        </tr>
-    </table>
+                <div class="chat_memory_content">
+                  <div class="chat_memory_label">爱好</div>
+                  <div class="chat_memory_text">
+                    <p>-阅读：尤其喜欢心理学和哲学类书籍。</p>
+                    <p>-音乐：对音乐有浓厚兴趣，喜欢弹钢琴。</p>
+                    <p>-通过创作表达情感：音乐和绘画是他表达内心的途径。</p>
+                  </div>
+                </div>
+                <div class="chat_memory_content">
+                  <div class="chat_memory_label">聊天摘要</div>
+                  <div class="chat_memory_text">
+                    <p>-对未来的不确定感：小明在咨询中表达了对未来的不安。</p>
+                    <p>-在意他人看法：有时会因过于在意他人看法而感到压力。</p>
+                    <p>-咨询师建议：咨询师鼓励他多表达自己的想法，增强自信。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </el-col>
+        </el-row>
+      </el-main>
+    </el-container>
+  </el-container>
 </div>
 
 <script>
-    const {createApp, ref} = Vue
+
+    const {createApp, onMounted, ref, nextTick} = Vue
+
+    //const {ElementPlusIconsVue} = ElementPlusIconsVue
 
     async function fetchHttpData(url, options = {}) {
         try {
@@ -93,59 +127,121 @@
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            return await response.json();
+            let resp = await response.json();
+            if (resp && resp.code === 0 && resp.data) {
+                return resp.data;
+            }
+            console.warn("fetching data warning: ", resp)
+            return null;
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.error('fetching data error:', error);
             return null;
         }
     }
 
+    async function fetchHttpPost(url, data = {}) {
+        return await fetchHttpData(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        })
+    }
+
+    // 创建APP实例
     const app = createApp({
         setup() {
+            let chatMessageOffset = ref(0)
+            let chatMessageFlag = ref(true)
+            let chatFormInput = ref('')
+            let messages = ref([])
+            const chatFormInputRef = ref(null)
+            const chatContentRef = ref(null)
+            const chatContentScrollRef = ref(null);
 
             function sendChatMessage() {
-                let inputText = this.chatFormInput
+                let inputText = chatFormInput.value
                 console.log("发送消息：" + inputText)
-                this.messages.push({
+                messages.value.push({
                     from_role: 1,
                     content: inputText
                 })
-                this.chatFormInput = ref('')
-                fetchHttpData('/chat/send', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            message: inputText
+                //清空聊天消息
+                chatFormInputRef.value.clear()
+                fetchHttpPost('/chat/send', {
+                    message: inputText
+                }).then(data => {
+                    const replyMessage = data.replyMessage
+                    console.log("回复消息：" + replyMessage)
+                    if (replyMessage && replyMessage !== '') {
+                        messages.value.push({
+                            from_role: 2,
+                            content: replyMessage
                         })
-                    }).then(resp => {
-                        if (resp && resp.code === 0 && resp.data) {
-                            const replyMessage = resp.data.replyMessage
-                            console.log("回复消息：" + replyMessage)
-                            if (replyMessage && replyMessage !== '') {
-                                this.messages.push({
-                                    from_role: 2,
-                                    content: replyMessage
-                                })
-                            }
-                        } else {
-                            console.log("send message error, ", resp)
-                        }
-                    })
+                    }
+                    scrollChatMessageBottom()
+                })
             }
 
+            function scrollChatMessageBottom() {
+                // 消息发送后滚动到底部
+                nextTick(() => {
+                    console.log("开始滚动：", chatContentScrollRef.value.scrollHeight, chatContentRef.value.scrollHeight)
+                    chatContentScrollRef.value.setScrollTop(chatContentRef.value.scrollHeight);
+                })
+            }
+
+            function findChatMessages() {
+                if (chatMessageFlag === false) {
+                    console.log("没有下一页聊天数据了！")
+                    return;
+                }
+                fetchHttpPost('/chat/messages', {
+                    pageSize: 20,
+                    offset: chatMessageOffset.value
+                }).then(data => {
+                    chatMessageFlag = ref(data.hasMore);
+                    chatMessageOffset = ref(data.nextOffset);
+                    if (data.messages.length > 0) {
+                        for (let i = data.messages.length - 1; i >= 0; i--) {
+                            messages.value.unshift(data.messages[i]);
+                        }
+                    }
+                })
+            }
+
+            onMounted(() => {
+                findChatMessages()
+            });
+
             return {
+                // 属性部分
                 welcome_msg: ref("你好，我是你的专属心灵治愈师！请输入你的问题开始咨询。"),
-                messages: ref([]),
-                chatFormInput: ref(""),
-                sendChatMessage
+                messages,
+                chatFormInput,
+                chatMessageOffset,
+                chatMessageFlag,
+                chatContentRef,
+                chatContentScrollRef,
+                chatFormInputRef,
+                // 方法部分
+                sendChatMessage,
+                findChatMessages,
+                scrollChatMessageBottom
             };
         },
         mounted() {
             console.log("mounted app")
+        },
+        unmounted() {
+            console.log("unmouted app")
         }
     })
     // 和默认的模板冲突，所以这里需要改一下
     app.config.compilerOptions.delimiters = ['[[', ']]']
+    app.use(ElementPlus, {size: 'small', zIndex: 3000})
+    for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+        app.component(key, component)
+    }
     app.mount('#chat_app')
 </script>
 

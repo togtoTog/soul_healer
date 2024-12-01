@@ -4,6 +4,7 @@ import sys
 from app.SoulHealerAppService import SoulHealerAppService
 from database import init_db
 from service.ChatMessageService import ChatMessageService
+from chat import chat
 
 logger_format = '%(asctime)s %(levelname)s %(filename)s:%(lineno)s - %(message)s'
 logger = logging.getLogger(__name__)
@@ -15,12 +16,14 @@ if __name__ == '__main__':
     soul_healer = SoulHealerAppService()
     # =============第一轮对话==============================
     # output = soul_healer.chat_healer("我最近有点不开心，你能帮我吗？")
+    answer1, history1 = chat("我最近有点不开心，你能帮我吗？", [])
+    print(answer1)
     # =============第二轮对话==============================
     # response = soul_healer.chat_healer("工作事情太多，干不完")
-
-    messages = soul_healer.pull_messages(pager={'page_size': 10, 'offset': 0})
-    print(messages)
-
+    answer2, history2 = chat("工作事情太多，干不完", history1)
+    print(answer2)
+    # messages = soul_healer.pull_messages(pager={'page_size': 10, 'offset': 0})
+    # print(messages)
 
     # # tripo_url = soul_healer.create_soul_healer("帮我创建1个心灵治愈师的卡通形象")
     # # soul_healer.export_soul_healer(tripo_url)

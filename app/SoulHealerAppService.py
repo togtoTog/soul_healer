@@ -78,5 +78,5 @@ class SoulHealerAppService:
         messages = self.message_service.pull_chat_messages(pager=pager)
         data_list = list()
         for message in messages:
-            data_list.append(ChatMessageView(message))
+            data_list.append(ChatMessageView(message).to_dict())
         return data_list

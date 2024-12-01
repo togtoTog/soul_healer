@@ -98,17 +98,21 @@ def chat_send_message():
 @app.route("/chat/messages", methods=['POST'])
 def chat_pull_message():
     req_body = request.get_json()
+    page_size = req_body['pageSize']
     offset = req_body['offset']
-    pager = {
-        'page_size': req_body['pageSize'],
-        'offset': req_body['offset']
-    }
-    messages = soul_healer_app.pull_messages(pager=pager)
+    messages = soul_healer_app.pull_messages(
+        pager={
+            'page_size': page_size,
+            'offset': offset
+        }
+    )
+    # 是否有下一页
+    has_more = len(messages) == page_size
     return {
         "code": 0,
         "message": "success",
         "data": {
-            "hasMore": True,
+            "hasMore": has_more,
             "nextOffset": offset + len(messages),
             "messages": messages
         }
