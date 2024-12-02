@@ -7,9 +7,10 @@
   <link rel="stylesheet" href="../static/css/style_chat.css"/>
   <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
   <!-- import JavaScript -->
+  <script src="../static/js/http_utils.js"></script>
   <script src="../static/js/vue.global.js"></script>
-  <script src="https://unpkg.com/element-plus"></script>
-  <script src="https://unpkg.com/@element-plus/icons-vue"></script>
+  <script src="../static/js/element-plus.js"></script>
+  <script src="../static/js/element-plus-icons.js"></script>
   <script src="../static/js/chat_vue.js" defer></script>
 </head>
 <body style="margin: 0">
@@ -83,28 +84,8 @@
               <div class="chat_memory">
                 <div class="chat_memory_date">2024年11月27日</div>
                 <div class="chat_memory_content">
-                  <div class="chat_memory_label">性格</div>
-                  <div class="chat_memory_text">
-                    <p>- 内向和敏感：小明倾向于内向，容易感受到周围环境的变化。</p>
-                    <p>- 在意他人感受：对他人的情绪和反应非常敏感。</p>
-                    <p>- 不善表达：尽管内心丰富，但在表达自己时常感到困难。</p>
-                  </div>
-                </div>
-                <div class="chat_memory_content">
-                  <div class="chat_memory_label">爱好</div>
-                  <div class="chat_memory_text">
-                    <p>-阅读：尤其喜欢心理学和哲学类书籍。</p>
-                    <p>-音乐：对音乐有浓厚兴趣，喜欢弹钢琴。</p>
-                    <p>-通过创作表达情感：音乐和绘画是他表达内心的途径。</p>
-                  </div>
-                </div>
-                <div class="chat_memory_content">
-                  <div class="chat_memory_label">聊天摘要</div>
-                  <div class="chat_memory_text">
-                    <p>-对未来的不确定感：小明在咨询中表达了对未来的不安。</p>
-                    <p>-在意他人看法：有时会因过于在意他人看法而感到压力。</p>
-                    <p>-咨询师建议：咨询师鼓励他多表达自己的想法，增强自信。</p>
-                  </div>
+                  <div class="chat_memory_label">总结</div>
+                  <div class="chat_memory_text" v-html="chatMessageSummary"></div>
                 </div>
               </div>
             </div>
@@ -115,45 +96,20 @@
   </el-container>
 </div>
 
-<script>
+<script type="module">
 
     const {createApp, onMounted, ref, nextTick} = Vue
-
-    //const {ElementPlusIconsVue} = ElementPlusIconsVue
-
-    async function fetchHttpData(url, options = {}) {
-        try {
-            const response = await fetch(url, options);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            let resp = await response.json();
-            if (resp && resp.code === 0 && resp.data) {
-                return resp.data;
-            }
-            console.warn("fetching data warning: ", resp)
-            return null;
-        } catch (error) {
-            console.error('fetching data error:', error);
-            return null;
-        }
-    }
-
-    async function fetchHttpPost(url, data = {}) {
-        return await fetchHttpData(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        })
-    }
 
     // 创建APP实例
     const app = createApp({
         setup() {
+            //变量
             let chatMessageOffset = ref(0)
             let chatMessageFlag = ref(true)
             let chatFormInput = ref('')
             let messages = ref([])
+            let chatMessageSummary = ref('')
+            //ref对象
             const chatFormInputRef = ref(null)
             const chatContentRef = ref(null)
             const chatContentScrollRef = ref(null);
@@ -166,17 +122,21 @@
                     content: inputText
                 })
                 //清空聊天消息
-                chatFormInputRef.value.clear()
-                fetchHttpPost('/chat/send', {
+                chatFormInput.value = ''
+                HttpUtils.fetchHttpPost('/chat/send', {
                     message: inputText
                 }).then(data => {
-                    const replyMessage = data.replyMessage
+                    const {replyMessage, summary} = data
                     console.log("回复消息：" + replyMessage)
+                    console.log("总结：" + summary)
                     if (replyMessage && replyMessage !== '') {
                         messages.value.push({
                             from_role: 2,
                             content: replyMessage
                         })
+                    }
+                    if (summary && summary !== '') {
+                        chatMessageSummary.value = summary.replace(/(\r\n|\n)/g, '<br/>')
                     }
                     scrollChatMessageBottom()
                 })
@@ -195,7 +155,7 @@
                     console.log("没有下一页聊天数据了！")
                     return;
                 }
-                fetchHttpPost('/chat/messages', {
+                HttpUtils.fetchHttpPost('/chat/messages', {
                     pageSize: 20,
                     offset: chatMessageOffset.value
                 }).then(data => {
@@ -220,6 +180,7 @@
                 chatFormInput,
                 chatMessageOffset,
                 chatMessageFlag,
+                chatMessageSummary,
                 chatContentRef,
                 chatContentScrollRef,
                 chatFormInputRef,
@@ -233,7 +194,7 @@
             console.log("mounted app")
         },
         unmounted() {
-            console.log("unmouted app")
+            console.log("unmounted app")
         }
     })
     // 和默认的模板冲突，所以这里需要改一下

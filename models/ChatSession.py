@@ -1,9 +1,8 @@
 import json
-import time
 from enum import Enum, unique
 
 from objtyping import to_primitive
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, UnicodeText
 
 from database import Base, db_session
 from utils.TimeUtils import TimeUtils
@@ -22,7 +21,7 @@ class ChatSession(Base):
     # 会话状态 0未知 1开启 1000关闭
     status = Column(Integer)
     # 会话摘要
-    summary = Column(String(1024), nullable=True)
+    summary = Column(UnicodeText, nullable = True)
     min_message_time = Column(Integer)
     max_message_time = Column(Integer)
     create_time = Column(Integer)
@@ -59,6 +58,7 @@ class ChatSession(Base):
                 old_session.max_message_time = new_session.max_message_time
             old_session.update_time = TimeUtils.system_time_millis()
             db_session.commit()
+        return old_session
 
     @classmethod
     def close(cls, session):

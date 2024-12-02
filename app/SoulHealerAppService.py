@@ -1,11 +1,12 @@
 import logging
 import os
-from utils.FileUtils import FileUtils
+
 from exception.ApiException import ApiException
-from service.KLingImageService import KLingImageService
-from service.Tripo3DService import Tripo3DService
-from service.KwaiYiiChatService import KwaiYiiChatService
 from service.ChatMessageService import ChatMessageService
+from service.KLingImageService import KLingImageService
+from service.KwaiYiiChatService import KwaiYiiChatService
+from service.Tripo3DService import Tripo3DService
+from utils.FileUtils import FileUtils
 from views.ChatMessageView import ChatMessageView
 
 retry_config = {
@@ -14,7 +15,8 @@ retry_config = {
 }
 
 chat_config = {
-    "theme": "你是一个心灵治愈师，能够针对用户的咨询，提供有效的心理开导。你的专长在于理解和分析用户的情感和心理状态，并根据用户的聊天记录，提供个性化的建议和支持。你可以帮助用户缓解心理压力，提升情绪，并且能够记忆聊天记录，从而更好地理解用户的性格、爱好和聊天主题。",
+    "theme": """你是一个心灵治愈师，能够针对用户的咨询和聊天历史，提供有效的心理开导和回答。""",
+    "summary": """你是一个聊天记录分析专家，能够根据用户的聊天记录生成摘要，并识别用户的性格。输出格式为：摘要：<摘要> \n 性格：<性格> \n ，聊天记录为：[%s]""",
     "max_round_size": 100
 }
 
@@ -56,27 +58,32 @@ class SoulHealerAppService:
 
     # 和治愈师聊天
     def chat_healer(self, message):
-        # 保存聊天记录
-        self.message_service.save_chat_message(from_role=1, content=message)
+        if len(message) <= 0:
+            return None
         # 查询最近的聊天记录作为聊天历史，按照 id 正序排列
-        max_round_size = chat_config['max_round_size']
-        messages = self.message_service.pull_chat_messages(
+        history = self.message_service.pull_chat_messages(
             pager={
-                'page_size': max_round_size,
+                'page_size': chat_config['max_round_size'],
                 'offset': 0
             }
         )
-        reply_message = self.chat_service.do_chat_messages(chat_config=chat_config, messages=messages)
-        # 保持回复结果
-        session, new_message = self.message_service.save_chat_message(from_role=2, content=reply_message)
-        if new_message is None:
-            return None
-        return ChatMessageView(new_message)
+        # 保存发送消息
+        session, send_message = self.message_service.save_chat_message(from_role=1, content=message)
+        history.append(send_message)
+        reply_answer = self.chat_service.do_chat_messages(chat_config=chat_config, messages=history)
+        # 保存回复消息
+        session, new_answer = self.message_service.save_chat_message(from_role=2, content=reply_answer)
+        if new_answer is not None:
+            history.append(new_answer)
+        # 聊天摘要
+        summary = self.chat_service.do_chat_summary(chat_config, history)
+        self.message_service.update_session_summary(user_id=0, session_id=session.id, summary=summary, new_message=new_answer)
+        return None if new_answer is None else ChatMessageView(new_answer, summary)
 
     # 分页查询聊天记录
     def pull_messages(self, pager):
         messages = self.message_service.pull_chat_messages(pager=pager)
         data_list = list()
         for message in messages:
-            data_list.append(ChatMessageView(message).to_dict())
+            data_list.append(ChatMessageView(message, None).to_dict())
         return data_list

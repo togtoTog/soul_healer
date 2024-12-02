@@ -134,7 +134,6 @@
 
     .chat_summary {
         width: 100%;
-        max-width: 500px;
         height: 100%;
         border: 1px solid #e0e2e5;
         border-radius: 10px;
@@ -148,7 +147,6 @@
         margin: 10px 10px 0 10px;
         display: flex;
         flex-direction: column;
-        border-bottom: 1px solid #e0e2e5;
     }
 
     .chat_memory_date {
@@ -163,7 +161,7 @@
 
     .chat_memory_text {
         font-size: 12px;
-        margin-left: 5px;
+        padding: 8px;
     }
 
     .chat_memory_content {

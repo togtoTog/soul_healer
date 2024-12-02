@@ -1,38 +1,27 @@
 import logging
-import sys
 
 from app.SoulHealerAppService import SoulHealerAppService
 from database import init_db
-from service.ChatMessageService import ChatMessageService
-from chat import chat
 
 logger_format = '%(asctime)s %(levelname)s %(filename)s:%(lineno)s - %(message)s'
 logger = logging.getLogger(__name__)
 
+chat_config = {
+    "theme": """你是一个心灵治愈师，能够针对用户的咨询和聊天历史，提供有效的心理开导和回答。""",
+    "summary": """你是一个聊天记录分析专家，能够根据用户的聊天记录生成摘要，并识别用户的性格。输出格式为：摘要：<摘要> \n 性格：<性格> \n ，聊天记录为：[%s]""",
+    "max_round_size": 100
+}
+
 if __name__ == '__main__':
-    print(sys.getdefaultencoding())
     logging.basicConfig(level=logging.INFO, format=logger_format)
     init_db()
-    soul_healer = SoulHealerAppService()
+    chat_service = SoulHealerAppService()
     # =============第一轮对话==============================
-    # output = soul_healer.chat_healer("我最近有点不开心，你能帮我吗？")
-    answer1, history1 = chat("我最近有点不开心，你能帮我吗？", [])
-    print(answer1)
+    answer1 = chat_service.chat_healer("我最近有点不开心，你能帮我吗？")
+    print(answer1.content, answer1.summary)
     # =============第二轮对话==============================
-    # response = soul_healer.chat_healer("工作事情太多，干不完")
-    answer2, history2 = chat("工作事情太多，干不完", history1)
-    print(answer2)
-    # messages = soul_healer.pull_messages(pager={'page_size': 10, 'offset': 0})
-    # print(messages)
-
-    # # tripo_url = soul_healer.create_soul_healer("帮我创建1个心灵治愈师的卡通形象")
-    # # soul_healer.export_soul_healer(tripo_url)
-
-    # chat_message_service = ChatMessageService()
-    # chat_message_service.save_chat_message('user', "abc")
-    # chat_message_service.save_chat_message("assistant", "efg")
-
-    # init_db()
-    # session = ChatSession(user_id=0, summary="test", message_time=TimeUtils.system_time_millis())
-    # new_session = ChatSession.insert(session)
-    # print(new_session)
+    answer2 = chat_service.chat_healer("工作事情太多，干不完")
+    print(answer2.content, answer2.summary)
+    # =============第三轮对话==============================
+    answer3 = chat_service.chat_healer("合作的同事负责的部分老是延期，导致整体进度不符合预期")
+    print(answer3.content, answer3.summary)

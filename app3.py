@@ -82,14 +82,17 @@ def chat_send_message():
     reply_message = soul_healer_app.chat_healer(message)
     if reply_message is None:
         reply_content = ''
+        summary = ''
     else:
         reply_content = reply_message.content
+        summary = reply_message.summary
     return {
         "code": 0,
         "message": "success",
         "data": {
             "sendMessage": message,
-            "replyMessage": reply_content
+            "replyMessage": reply_content,
+            "summary": summary
         }
     }
 

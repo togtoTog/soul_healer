@@ -10,8 +10,7 @@ logger = logging.getLogger(__name__)
 split_char = '|'
 
 session_config = {
-    # "interval_time": 3 * 60 * 60 * 1000
-    "interval_time": 1 * 60 * 1000
+    "interval_time": 3 * 60 * 60 * 1000
 }
 
 
@@ -49,3 +48,8 @@ class ChatMessageService:
         page_size = pager['page_size']
         page_offset = pager['offset']
         return ChatMessage.pull_chat_messages(user_id=user_id, page_offset=page_offset, page_size=page_size)
+
+    @staticmethod
+    def update_session_summary(user_id=0, session_id=None, summary = None, new_message=None):
+        new_session = ChatSession(user_id=user_id, summary=summary, message_time=new_message.message_time)
+        ChatSession.update(session_id, new_session)
